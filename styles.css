@@ -1,0 +1,167 @@
+/* http://meyerweb.com/eric/tools/css/reset/ 
+   v2.0 | 20110126
+   License: none (public domain)
+*/
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section {
+	display: block;
+}
+body {
+	line-height: 1;
+}
+ol, ul {
+	list-style: none;
+}
+blockquote, q {
+	quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+	content: '';
+	content: none;
+}
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+
+/* Custom Styles for Counter App */
+body {
+    font-family: "Roboto", sans-serif;
+    background-color: #fafafa;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}       
+
+.container {
+    background-color: #E5E0D8;
+    padding: 30px 50px;
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}   
+
+h1 {
+    font-size: 36px;
+    font-weight: 900;
+    text-transform: uppercase;
+    margin: 100px 0px 192px 0px;
+    color: #242424;
+}
+
+#status {
+    font-size: 20px;
+    color: #555555;
+    font-weight: 900;
+}
+
+#counter {
+    font-size: 128px;
+    font-weight: 900;
+    color: #242424;  
+    display: grid;
+    place-items: center;        /* centers text inside */
+    line-height: 1;             /* removes vertical offset */
+}
+
+
+/* Animation for rotating effect */
+.counter{
+  width: 140px;
+  height: 140px;          /* big enough for your large number */
+  overflow: hidden;
+  display: grid;
+  place-items: center;    /* centers the roller */
+  margin: 32px auto 180px;
+}
+
+.roller{
+  transform: translateY(0);
+}
+
+.num{
+  width: 140px;
+  height: 140px;          /* MUST match .counter height */
+  display: grid;
+  place-items: center;    /* centers the number text */
+  font-size: 128px;
+  font-weight: 900;
+  color: #242424;
+  line-height: 1;         /* fixes vertical text offset */
+}
+
+/* roll up (for +) */
+.roll-up{
+    animation: rollUp 220ms ease-in-out;
+}
+@keyframes rollUp{
+    from { transform: translateY(0); }
+    to   { transform: translateY(-80px); } /* MUST match height */
+}
+
+/* roll down (for -) */
+.roll-down{
+    animation: rollDown 220ms ease-in-out;
+}
+@keyframes rollDown{
+    from { transform: translateY(-80px); }
+    to   { transform: translateY(0); }
+}
+
+.buttons {
+    margin: 0px 0px 120px 0px;
+    width: 354px;              /* optional */
+    height: 180px;             /* optional */
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 2fr;   /* top shorter, bottom taller */
+    gap: 8px;                   /* white lines between like your pic */
+    padding: 8px;
+    border-radius: 12px;
+}
+
+.btn{
+    border: 0;
+    border-radius: 10px;
+    font-weight: 800;
+    font-size: 32px;
+    cursor: pointer;
+}
+
+.reset{
+    font-family: "Roboto", sans-serif;
+    grid-column: 1 / -1;        /* span both columns */
+    background: #6ea8ff;
+    font-size: 28px;
+}
+
+.minus{
+    background: #FF6E6E;
+}
+.plus{
+    background: #6EFFBB;
+}
