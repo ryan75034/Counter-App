@@ -1,4 +1,4 @@
-const statusEl = document.querySelector("#status");        // selects the paragraph that shows Neutral / words
+const statusEl = document.querySelector("#status");        // selects the paragraph that shows status
 
 const minusBtn = document.querySelector(".minus");         // selects the minus button
 const plusBtn  = document.querySelector(".plus");          // selects the plus button
@@ -9,25 +9,25 @@ const numTop    = document.querySelector("#numTop");       // top number in the 
 const numBottom = document.querySelector("#numBottom");    // bottom number in the slot
 
 let count = 0;                                             // stores the current number value
+let isRolling = false;                                     // prevents click spam during animation
 
-const numberWords = {                                     // converts numbers into words
+const numberWords = {                                      // converts numbers into words
   1:"One",2:"Two",3:"Three",4:"Four",5:"Five",
   6:"Six",7:"Seven",8:"Eight",9:"Nine",10:"Ten"
 };
 
-// updates the status text (Neutral / words)
-function updateStatus() {                                  // function to update the status text
-  if (count === 0) statusEl.textContent = "Neutral";       // if count is 0, show Neutral
-  else if (count > 0) statusEl.textContent = numberWords[count] ?? count; // positive: show word or number
-  else {                                                    // if count is negative
-    const absValue = Math.abs(count);                      // make number positive
-    const word = numberWords[absValue] ?? absValue;        // get word or number
-    statusEl.textContent = `Negative ${word}`;             // show Negative + word
-  }
+function formatWord(n) {                                   // returns word for 1–10, else number
+  return numberWords[Math.abs(n)] ?? Math.abs(n);
 }
 
-// roll function: direction is "up" for +, "down" for -
+function updateStatus() {                                  // updates the status text
+  if (count === 0) statusEl.textContent = "Neutral";       // if count is 0, show Neutral
+  else if (count > 0) statusEl.textContent = `Positive ${formatWord(count)}`; // positive label
+  else statusEl.textContent = `Negative ${formatWord(count)}`;                // negative label
+}
+
 function rollTo(newValue, direction) {                     // controls slot animation
+  isRolling = true;                                        // lock inputs during roll
   roller.classList.remove("roll-up", "roll-down");         // remove old animation classes
 
   if (direction === "up") {                                // if increasing number
@@ -35,46 +35,47 @@ function rollTo(newValue, direction) {                     // controls slot anim
     numBottom.textContent = newValue;                      // next number below
     roller.style.transform = "translateY(0)";              // start at normal position
     void roller.offsetWidth;                               // force reflow to restart animation
-    roller.classList.add("roll-up");                        // play roll-up animation
-  } else {                                                  // if decreasing number
-    numTop.textContent = newValue;                          // next number on top
-    numBottom.textContent = count;                          // current number below
-    roller.style.transform = "translateY(-80px)";           // start above view
+    roller.classList.add("roll-up");                       // play roll-up animation
+  } else {                                                 // if decreasing number
+    numTop.textContent = newValue;                         // next number on top
+    numBottom.textContent = count;                         // current number below
+    roller.style.transform = "translateY(-80px)";          // start above view
     void roller.offsetWidth;                               // force reflow
-    roller.classList.add("roll-down");                      // play roll-down animation
+    roller.classList.add("roll-down");                     // play roll-down animation
   }
 
   roller.addEventListener("animationend", function handler() { // runs after animation ends
     roller.removeEventListener("animationend", handler);   // remove listener to prevent stacking
-    numTop.textContent = newValue;                          // set final number on top
-    numBottom.textContent = newValue;                       // sync bottom number
-    roller.style.transform = "translateY(0)";               // reset position
+    numTop.textContent = newValue;                         // set final number on top
+    numBottom.textContent = newValue;                      // sync bottom number
+    roller.style.transform = "translateY(0)";              // reset position
+    isRolling = false;                                     // unlock inputs
   });
 }
 
-// plus button action
-plusBtn.addEventListener("click", () => {                   // when plus button is clicked
-  const next = count + 1;                                   // calculate next number
-  rollTo(next, "up");                                       // roll slot up
-  count = next;                                             // update count value
-  updateStatus();                                           // update status text
+function changeCount(delta) {                              // central place to change count
+  if (isRolling) return;                                   // ignore if mid-animation
+  const next = count + delta;                               // compute next
+  rollTo(next, delta > 0 ? "up" : "down");                 // animate
+  count = next;                                            // save
+  updateStatus();                                          // update label
+}
+
+plusBtn.addEventListener("click", () => changeCount(1));   // plus button
+minusBtn.addEventListener("click", () => changeCount(-1)); // minus button
+
+resetBtn.addEventListener("click", () => {                 // reset button
+  if (isRolling) return;                                   // ignore if mid-animation
+  count = 0;                                               // reset count to zero
+  numTop.textContent = 0;                                  // reset top number
+  numBottom.textContent = 0;                               // reset bottom number
+  updateStatus();                                          // update status text
 });
 
-// minus button action
-minusBtn.addEventListener("click", () => {                  // when minus button is clicked
-  const next = count - 1;                                   // calculate next number
-  rollTo(next, "down");                                     // roll slot down
-  count = next;                                             // update count value
-  updateStatus();                                           // update status text
+document.addEventListener("keydown", (e) => {              // keyboard shortcuts (bonus)
+  if (e.key === "+") changeCount(1);                       // plus key
+  if (e.key === "-") changeCount(-1);                      // minus key
+  if (e.key.toLowerCase() === "r") resetBtn.click();       // r resets
 });
 
-// reset button action
-resetBtn.addEventListener("click", () => {                  // when reset button is clicked
-  count = 0;                                                 // reset count to zero
-  numTop.textContent = 0;                                   // reset top number
-  numBottom.textContent = 0;                                // reset bottom number
-  updateStatus();                                           // update status text
-});
-
-// initial
-updateStatus();                                             // set initial status on page load
+updateStatus();                                            // initial status on page load
