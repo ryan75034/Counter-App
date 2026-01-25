@@ -24,3 +24,8 @@ slot-machine style animation.
 ## How to Run
 1. Clone the repository
 2. Open `index.html` in a browser
+
+## Screenshots
+![Default](screenshots/default.png)
+![Positive](screenshots/positive.png)
+![Negative](screenshots/negative.png)

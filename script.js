@@ -78,4 +78,13 @@ document.addEventListener("keydown", (e) => {              // keyboard shortcuts
   if (e.key.toLowerCase() === "r") resetBtn.click();       // r resets
 });
 
+document.addEventListener("keydown", (e) => {
+  if (isRolling) return;
+
+  if (e.key === "+" || e.key === "=") plusBtn.click();      // + (or = without shift)
+  if (e.key === "-") minusBtn.click();                      // -
+  if (e.key.toLowerCase() === "r") resetBtn.click();        // r
+});
+
+
 updateStatus();                                            // initial status on page load
